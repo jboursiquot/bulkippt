@@ -1,6 +1,6 @@
 # Bulkippt
 
-TODO: Write a gem description
+Allows you to upload your bookmarks to kippt.com in bulk. You'll need a kippt.com account (of course) from which you'll obtain your API token along with your username. From there, all you need is a CSV file with url, title and description headers and the loader will push those links to kippt.com on your behalf.
 
 ## Installation
 
@@ -17,8 +17,17 @@ Or install it yourself as:
     $ gem install bulkippt
 
 ## Usage
+	require 'kippt'
+	require 'bulkippt'
+	require 'yaml' #if you store your creeds in a yaml file
 
-TODO: Write usage instructions here
+	creds = YAML.load(File.open(File.expand_path('./config/my_kippt_creds.yml')))
+	service = Kippt::Client.new(username: creds['username'], token: creds['token'])
+	loader = Bulkippt::Loader.new(client, Logger.new(STDOUT))
+	csv_path = File.expand_path('./my_bookmarks.csv')
+	bookmarks = loader.extract_bookmarks csv_path
+	submitted = loader.submit_bookmarks bookmarks
+
 
 ## Contributing
 
