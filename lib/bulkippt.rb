@@ -62,9 +62,12 @@ module Bulkippt
           clip.url = bookmark.url
           clip.title = bookmark.title
           clip.notes = bookmark.description
-          clip.list = bookmark.folder
-          saved = clip.save
-          submitted << clip if saved
+          if clip.save
+            submitted << clip
+            @logger.info "SUCCESS: #{clip.title} #{clip.url}"
+          else
+            @logger.error "FAILURE: #{clip.title} #{clip.url} | #{clip.errors[]}"
+          end
         end
         submitted
       rescue => e
