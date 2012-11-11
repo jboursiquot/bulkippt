@@ -19,7 +19,7 @@ Or install it yourself as:
 ## Usage
 	require 'kippt'
 	require 'bulkippt'
-	require 'yaml' #if you store your creeds in a yaml file
+	require 'yaml' #if you store your creds in a yaml file
 
 	creds = YAML.load(File.open(File.expand_path('./config/my_kippt_creds.yml')))
 	service = Kippt::Client.new(username: creds['username'], token: creds['token'])
