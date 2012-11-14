@@ -35,6 +35,7 @@ module Bulkippt
         parse_csv(@csv)
       rescue => e
         @logger.error e.message
+        []
       end
     end
 
@@ -53,6 +54,7 @@ module Bulkippt
         submitted
       rescue => e
         @logger.error e.message
+        []
       end
     end
 
@@ -73,13 +75,13 @@ module Bulkippt
     end
 
     def validate_file_path(file_path)
-      raise Exception, "CSV not found: #{file_path}" if !File.exists?(file_path)
+      raise "File not found: #{file_path}" if !File.exists?(file_path)
     end
 
     def validate_headers(headers)
       #url and title are required, description and folder are not
-      raise Exception, "Missing 'url' column" unless headers.include? 'url'
-      raise Exception, "Missing 'title' column" unless headers.include? 'title'
+      raise "Missing 'url' column" unless headers.include? 'url'
+      raise "Missing 'title' column" unless headers.include? 'title'
     end
 
     def bookmark_instance(url, title, desc, folder)

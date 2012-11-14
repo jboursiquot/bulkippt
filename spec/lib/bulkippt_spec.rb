@@ -5,11 +5,11 @@ describe "Bulkippt" do
   context "when asked to verify credentials" do
 
     it "should detect that a given set of credentials is incorrect" do
-      Bulkippt::Loader.new(Bulkippt::FakeService.new('invalid', 'invalid')).credentials_valid?.should be_false
+      Bulkippt::Loader.new(Bulkippt::FakeService.new('invalid', 'invalid'), Logger.new('/dev/null')).credentials_valid?.should be_false
     end
 
     it "should detect that a given set of credentials is correct" do
-      Bulkippt::Loader.new(Bulkippt::FakeService.new('valid', 'valid')).credentials_valid?.should be_true
+      Bulkippt::Loader.new(Bulkippt::FakeService.new('valid', 'valid'), Logger.new('/dev/null')).credentials_valid?.should be_true
     end
 
   end
@@ -20,14 +20,20 @@ describe "Bulkippt" do
       File.expand_path './spec/data/empty.csv'
     end
 
-    it "should raise an error when it can't find the file specified" do
-      loader = Bulkippt::Loader.new(Bulkippt::FakeService.new('valid','valid'))
-      expect {loader.extract_bookmarks('/does/not/exist.csv')}.to raise_error
+    let :loader do
+      Bulkippt::Loader.new(Bulkippt::FakeService.new('valid','valid'), Logger.new('/dev/null'))
+    end
+
+    it "should fail to extract bookmarks when CSV's not found" do
+      result = loader.extract_bookmarks('/does/not/exist.csv')
+      result.should be_an_instance_of Array
+      result.size.should == 0
     end
 
     it "should raise an error when missing the require url and title columns" do
-      loader = Bulkippt::Loader.new(Bulkippt::FakeService.new('valid', 'valid'))
-      expect { loader.extract_bookmarks bad_csv }.to raise_error
+      result = loader.extract_bookmarks(bad_csv)
+      result.should be_an_instance_of Array
+      result.size.should == 0
     end
 
   end
@@ -38,15 +44,17 @@ describe "Bulkippt" do
       File.expand_path './spec/data/good.csv'
     end
 
+    let :loader do
+      Bulkippt::Loader.new(Bulkippt::FakeService.new('valid','valid'), Logger.new('/dev/null'))
+    end
+
     it "should find all the bookmarks" do
-      loader = Bulkippt::Loader.new(Bulkippt::FakeService.new('valid', 'valid'))
       clips = loader.extract_bookmarks good_csv
       clips.class.should == Array
       clips.size.should >= 3
     end
 
     it "should use the service to submit the bookmarks" do
-      loader = Bulkippt::Loader.new(Bulkippt::FakeService.new('valid', 'valid'))
       bookmarks = loader.extract_bookmarks good_csv
       saved = loader.submit_bookmarks bookmarks
       saved.class.should == Array

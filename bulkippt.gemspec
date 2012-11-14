@@ -22,4 +22,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rake','~> 0.9'
   gem.add_development_dependency 'rspec','~> 2.11'
   gem.add_development_dependency 'fivemat', '~> 1.1'
+  gem.add_development_dependency 'pry'
+  gem.add_development_dependency 'pry-debugger'
 end
