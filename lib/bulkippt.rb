@@ -1,4 +1,5 @@
 require "bulkippt/version"
+require "bulkippt/fake_service"
 
 require 'csv'
 require 'logger'
