@@ -1,5 +1,7 @@
 # Bulkippt
 
+[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/jboursiquot/bulkippt)
+
 Allows you to upload your bookmarks to kippt.com in bulk. You'll need a kippt.com account (of course) from which you'll obtain your API token along with your username. From there, all you need is a CSV file with url, title and description headers and the loader will push those links to kippt.com on your behalf.
 
 ## Installation
