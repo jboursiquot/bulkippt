@@ -30,7 +30,25 @@ module Bulkippt
     def extract_bookmarks(file_path)
       begin
         validate_file_path file_path
+      rescue => e
+        @logger.error e.message
+        return []
+      end
+
+      begin
         @csv = CSV.read(file_path, {headers: true})
+      rescue ArgumentError => e
+        @logger.warn e.message + " | Forcing UTF-8..."
+        begin
+          data = IO.read(file_path).force_encoding("ISO-8859-1").encode("utf-8", replace: nil)
+          @csv = CSV.parse(data, {headers: true})
+        rescue => e
+          @logger.error "Failed to force UTF-8 | " + e.message
+          return []
+        end
+      end
+
+      begin
         validate_headers(normalize_headers(@csv.headers))
         parse_csv(@csv)
       rescue => e
@@ -68,6 +86,10 @@ module Bulkippt
         result << bookmark_instance(row['url'], row['title'], row.fetch('description',''), row.fetch('folder',''))
       end
       result
+    end
+
+    def parse_file(file_path)
+      IO.read(file_path).force_encoding("ISO-8859-1").encode("utf-8", replace: nil)
     end
 
     def normalize_headers(headers)

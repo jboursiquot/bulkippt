@@ -44,6 +44,10 @@ describe "Bulkippt" do
       File.expand_path './spec/data/good.csv'
     end
 
+    let :non_utf8_csv do
+      File.expand_path './spec/data/non-utf8.csv'
+    end
+
     let :loader do
       Bulkippt::Loader.new(Bulkippt::FakeService.new('valid','valid'), Logger.new('/dev/null'))
     end
@@ -52,6 +56,12 @@ describe "Bulkippt" do
       clips = loader.extract_bookmarks good_csv
       clips.class.should == Array
       clips.size.should >= 3
+    end
+
+    it "should handle non-UTF-8 CSVs and still find all the bookmarks" do
+      clips = loader.extract_bookmarks non_utf8_csv
+      clips.class.should == Array
+      clips.size.should >= 2
     end
 
     it "should use the service to submit the bookmarks" do
