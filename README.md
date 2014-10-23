@@ -26,7 +26,7 @@ require 'yaml' # if you store your creds in a yaml file
 
 creds = YAML.load(File.open(File.expand_path('./config/my_kippt_creds.yml')))
 service = Kippt::Client.new(username: creds['username'], token: creds['token'])
-loader = Bulkippt::Loader.new(client, Logger.new(STDOUT))
+loader = Bulkippt::Loader.new(service, Logger.new(STDOUT))
 csv_path = File.expand_path('./my_bookmarks.csv')
 bookmarks = loader.extract_bookmarks csv_path
 submitted = loader.submit_bookmarks bookmarks
